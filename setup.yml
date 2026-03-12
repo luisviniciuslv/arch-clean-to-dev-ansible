@@ -8,6 +8,8 @@
       become: yes # Root apenas aqui
       community.general.pacman:
         name:
+          - ttf-jetbrains-mono-nerd
+          - noto-fonts-emoji
           - i3-wm
           - polybar
           - firefox
