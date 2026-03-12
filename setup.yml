@@ -43,9 +43,8 @@
         name: com.discordapp.Discord
         state: present
         remote: flathub
-
-    - name: 4. Criar diretórios de configuração do utilizador
-      become: no
+	
+    - name: 4. Criar estrutura de diretórios config
       file:
         path: "{{ item }}"
         state: directory
@@ -54,11 +53,11 @@
         - ~/.config/i3
         - ~/.config/polybar
         - ~/.config/nvim
+        - ~/.config/picom # Adicionado aqui para não dar erro no copy
         - ~/.local/bin
         - ~/.screenlayout
 
-    - name: 5. Sincronizar Dotfiles (Copiar ficheiros de config)
-      become: no
+    - name: 5. Sincronizar Dotfiles
       copy:
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
@@ -68,27 +67,30 @@
         - { src: 'dotfiles/polybar_config.ini', dest: '~/.config/polybar/config.ini' }
         - { src: 'dotfiles/picom.conf', dest: '~/.config/picom/picom.conf' }
 
-    - name: 6. Configurar activação do Mise no ZSH
-      become: no
+    - name: 6. Configurar ativação do Mise no ZSH
       lineinfile:
         path: ~/.zshrc
         line: 'eval "$(mise activate zsh)"'
         create: yes
+        state: present
 
-    - name: 7. Instalar linguagens globais via Mise (Rust e Node)
-      become: no
+    - name: 7. Instalar linguagens globais via Mise
       shell: |
-        eval "$(mise activate zsh)"
+        eval "$(~/.local/bin/mise activate zsh)"
         mise use --global rust@latest
         mise use --global node@latest
       args:
         executable: /usr/bin/zsh
+        creates: ~/.local/share/mise/installs/node # Evita rodar se já existir
 
     - name: 8. Activar serviço Bluetooth
+      become: yes # Necessário para systemd
       systemd:
         name: bluetooth
         enabled: yes
         state: started
 
-    - name: 9. Configurar Layout de Teclado PT-BR permanente
+    - name: 9. Configurar Layout de Teclado PT-BR
+      become: yes # Necessário para alterar config de sistema
       command: localectl set-x11-keymap br
+      changed_when: false # Comando informativo/configuração simples
