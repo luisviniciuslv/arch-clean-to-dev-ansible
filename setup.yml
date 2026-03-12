@@ -1,15 +1,16 @@
 - name: Provisionar Estação de Desenvolvimento Completa (Arch + i3 + Mise + Flatpak)
   hosts: localhost
   connection: local
-  become: yes
-
+  # Removi o become global para evitar problemas com o path ~/
+  
   tasks:
     - name: 1. Instalar pacotes base via Pacman
+      become: yes # Root apenas aqui
       community.general.pacman:
         name:
           - i3-wm
           - polybar
-	  - firefox
+          - firefox
           - picom
           - rofi
           - alacritty
@@ -19,16 +20,16 @@
           - base-devel
           - neovim
           - code
-          - mise           # Gestor de linguagens (Rust, Node, etc.)
-          - flatpak        # Para aplicações isoladas como o Discord
+          - mise
+          - flatpak
           - bluez
           - bluez-utils
           - blueman
           - pavucontrol
-          - maim           # Screenshots
-          - xclip          # Clipboard
-  	  - slop
-          - gnome-keyring  # Para salvar sessões (Discord)
+          - maim
+          - xclip
+          - slop
+          - gnome-keyring
         state: present
         update_cache: yes
 
@@ -43,19 +44,19 @@
         name: com.discordapp.Discord
         state: present
         remote: flathub
-	
+    
     - name: 4. Criar estrutura de diretórios config
       file:
         path: "{{ item }}"
         state: directory
         mode: '0755'
       loop:
-        - ~/.config/i3
-        - ~/.config/polybar
-        - ~/.config/nvim
-        - ~/.config/picom # Adicionado aqui para não dar erro no copy
-        - ~/.local/bin
-        - ~/.screenlayout
+        - "~/.config/i3"
+        - "~/.config/polybar"
+        - "~/.config/nvim"
+        - "~/.config/picom"
+        - "~/.local/bin"
+        - "~/.screenlayout"
 
     - name: 5. Sincronizar Dotfiles
       copy:
@@ -76,21 +77,21 @@
 
     - name: 7. Instalar linguagens globais via Mise
       shell: |
-        eval "$(~/.local/bin/mise activate zsh)"
+        eval "$($HOME/.local/bin/mise activate zsh)"
         mise use --global rust@latest
         mise use --global node@latest
       args:
         executable: /usr/bin/zsh
-        creates: ~/.local/share/mise/installs/node # Evita rodar se já existir
+        creates: ~/.local/share/mise/installs/node
 
     - name: 8. Activar serviço Bluetooth
-      become: yes # Necessário para systemd
+      become: yes
       systemd:
         name: bluetooth
         enabled: yes
         state: started
 
     - name: 9. Configurar Layout de Teclado PT-BR
-      become: yes # Necessário para alterar config de sistema
+      become: yes
       command: localectl set-x11-keymap br
-      changed_when: false # Comando informativo/configuração simples
+      changed_when: false
