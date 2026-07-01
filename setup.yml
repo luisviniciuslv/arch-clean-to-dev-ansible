@@ -97,3 +97,21 @@
       become: yes
       command: localectl set-x11-keymap br
       changed_when: false
+
+    - name: 10. Liberar pacman sem senha temporariamente para o AUR
+      become: yes
+      copy:
+        content: "{{ ansible_facts['user_id'] }} ALL=(ALL) NOPASSWD: /usr/bin/pacman"
+        dest: "/etc/sudoers.d/ansible-yay-pacman"
+        mode: '0440'
+        validate: 'visudo -cf %s'
+
+    - name: 10.1. Instalar pacotes do AUR
+      become: no
+      command: yay -S --needed --noconfirm antigravity
+
+    - name: 10.2. Remover liberação temporária do pacman (Segurança)
+      become: yes
+      file:
+        path: "/etc/sudoers.d/ansible-yay-pacman"
+        state: absent
