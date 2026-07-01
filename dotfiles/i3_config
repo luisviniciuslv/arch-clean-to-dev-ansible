@@ -227,3 +227,8 @@ bindsym Shift+Print exec --no-startup-id maim -s | xclip -selection clipboard -t
 
 # Print de ecrã inteiro (guarda na pasta Imagens)
 bindsym $mod+Print exec --no-startup-id maim ~/Imagens/$(date +%Y-%m-%d_%H-%M-%S).png
+
+# i3lock
+bindsym $mod+End exec i3lock
+
+

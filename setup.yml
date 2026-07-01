@@ -108,7 +108,7 @@
 
     - name: 10.1. Instalar pacotes do AUR
       become: no
-      command: yay -S --needed --noconfirm antigravity
+      command: yay -S --needed --noconfirm --overwrite "*" antigravity-ide
 
     - name: 10.2. Remover liberação temporária do pacman (Segurança)
       become: yes
