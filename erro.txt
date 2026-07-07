@@ -1,0 +1,54 @@
+[WARNING]: No inventory was parsed, only implicit localhost is available
+[WARNING]: provided hosts list is empty, only localhost is available. Note that the implicit localhost does not match 'all'
+
+PLAY [Provisionar Estação de Desenvolvimento Completa (Arch + i3 + Mise + Flatpak)] ***
+
+TASK [Gathering Facts] *********************************************************
+ok: [localhost]
+
+TASK [1. Instalar pacotes base via Pacman] *************************************
+ok: [localhost]
+
+TASK [2. Configurar Repositório Flathub] ***************************************
+ok: [localhost]
+
+TASK [3. Instalar Discord via Flatpak] *****************************************
+ok: [localhost]
+
+TASK [4. Criar estrutura de diretórios config] *********************************
+ok: [localhost] => (item=~/.config/i3)
+ok: [localhost] => (item=~/.config/polybar)
+ok: [localhost] => (item=~/.config/nvim)
+ok: [localhost] => (item=~/.config/picom)
+ok: [localhost] => (item=~/.local/bin)
+ok: [localhost] => (item=~/.screenlayout)
+
+TASK [5. Sincronizar Dotfiles] *************************************************
+ok: [localhost] => (item={'src': 'dotfiles/i3_config', 'dest': '~/.config/i3/config'})
+ok: [localhost] => (item={'src': 'dotfiles/polybar_config.ini', 'dest': '~/.config/polybar/config.ini'})
+ok: [localhost] => (item={'src': 'dotfiles/picom.conf', 'dest': '~/.config/picom/picom.conf'})
+
+TASK [6. Configurar ativação do Mise no ZSH] ***********************************
+ok: [localhost]
+
+TASK [7. Instalar linguagens globais via Mise] *********************************
+ok: [localhost]
+
+TASK [8. Activar serviço Bluetooth] ********************************************
+ok: [localhost]
+
+TASK [9. Configurar Layout de Teclado PT-BR] ***********************************
+ok: [localhost]
+
+TASK [10. Liberar pacman sem senha temporariamente para o AUR] *****************
+changed: [localhost]
+
+TASK [10.1. Instalar pacotes do AUR] *******************************************
+changed: [localhost]
+
+TASK [10.2. Remover liberação temporária do pacman (Segurança)] ****************
+changed: [localhost]
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=13   changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+

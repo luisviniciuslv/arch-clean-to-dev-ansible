@@ -6,7 +6,7 @@
   tasks:
     - name: 1. Instalar pacotes base via Pacman
       become: yes # Root apenas aqui
-      community.general.pacman:
+      package:
         name:
           - ttf-jetbrains-mono-nerd
           - noto-fonts-emoji
